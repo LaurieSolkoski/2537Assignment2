@@ -1,0 +1,10 @@
+<!-- _user.ejs -->
+<li>
+    <%= user.name %> - <%= user.isAdmin ? "Admin" : "User" %> 
+    <% if (user.isAdmin) { %>
+      <a href="/demote/<%= user._id %>" class="btn btn-sm btn-warning">Demote to User</a>
+    <% } else { %>
+      <a href="/promote/<%= user._id %>" class="btn btn-sm btn-success">Promote to Admin</a>
+    <% } %>
+  </li>
+  
