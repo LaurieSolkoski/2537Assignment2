@@ -9,7 +9,21 @@
 </head>
 <body>
   <%- include('templates/navbar') %>
-  <h1>Hello, <%= username %>.</h1>
+  <div class="container mt-4">
+    <h1>Hello, <%= username %>.</h1>
+    <h1>A Collection of Hikes!</h1>
+    <div class="row">
+      <div class="col-sm-12 col-md-4">
+        <img src="/images/image1.jpeg" alt="Image 1" class="img-fluid">
+      </div>
+      <div class="col-sm-12 col-md-4">
+        <img src="/images/image2.jpeg" alt="Image 2" class="img-fluid">
+      </div>
+      <div class="col-sm-12 col-md-4">
+        <img src="/images/image3.jpeg" alt="Image 3" class="img-fluid">
+      </div>
+    </div>
+  </div>
   <p><a href="/members">Members area</a></p>
   <p><a href="/logout">Log out</a></p>
   <%- include('templates/footer') %>
