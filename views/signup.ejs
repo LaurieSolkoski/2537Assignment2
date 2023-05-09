@@ -8,7 +8,7 @@
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </head>
 <body>
-  <%- include('templates/navbar') %>
+  <%- include('templates/navbar', { active: 'home' }) %>
   <h1>Sign up</h1>
   <form method="post" action="/signup">
     <label for="name">Name:</label>

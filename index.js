@@ -58,18 +58,18 @@ app.use(
 // Render the home page with options to sign up or sign in if not logged in
 app.get('/', (req, res) => {
   if (req.session.authenticated) {
-    res.render('home-loggedin', { username: req.session.username });
+    res.render('home-loggedin', { username: req.session.username, active: 'home' });
   } else {
-    res.render('home', {});
+    res.render('home', { active: 'home' });
   }
 });
 
 
-
 // Render the sign-up page
 app.get('/signup', (req, res) => {
-  res.render('signup', { error: null });
+  res.render('signup', { error: null, active: 'signup' });
 });
+
 
 // Process sign-up form submission
 app.post('/signup', async (req, res) => {
@@ -111,8 +111,9 @@ app.post('/signup', async (req, res) => {
 
 // Render the log in page
 app.get('/login', (req, res) => {
-  res.render('signin', { error: null });
+  res.render('signin', { error: null, active: 'login' });
 });
+
 
 // Process log in form submission
 app.post('/login', async (req, res) => {
@@ -165,8 +166,9 @@ app.get('/logout', (req, res) => {
   
   // Render the members area with a random image
   app.get('/members', isAuthenticated, (req, res) => {
-    res.render('members', { username: req.session.username });
+    res.render('members', { username: req.session.username, active: 'members' });
   });
+  
 
 
 
@@ -184,13 +186,15 @@ res.redirect('/login');
 // admin page
 app.get('/admin', isAuthenticated, isAdmin, async (req, res) => {
   const users = await userCollection.find({}).toArray();
-  res.render('admin', { users });
+  res.render('admin', { users, active: 'admin' });
 });
+
 
 // route for unauthorized page
 app.get('/not-authorized', (req, res) => {
-  res.render('not-authorized');
+  res.render('not-authorized', { active: '' }); // No active link in this case
 });
+
 
 
 
@@ -202,6 +206,9 @@ function isAdmin(req, res, next) {
   res.redirect('/not-authorized'); // Redirect to the unauthorized page
 }
 
+app.get('/about', (req, res) => {
+  res.render('about', { active: 'about' });
+});
 
 
 // isAuthenticated
