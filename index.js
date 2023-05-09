@@ -234,8 +234,9 @@ app.get('/demote/:userId', isAuthenticated, isAdmin, async (req, res) => {
   
   app.get('*', (req, res) => {
     res.status(404);
-    res.send('Page not found - 404');
+    res.render('404');
   });
+  
   
   app.listen(port, () => {
     console.log('Node application listening on port ' + port);
