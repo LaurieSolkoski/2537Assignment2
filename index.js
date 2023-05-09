@@ -95,12 +95,12 @@ app.post('/signup', async (req, res) => {
   // Hash the password and save the new user to the database
   const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-  await userCollection.insertOne({ name, email, password: hashedPassword, isAdmin: true  });
+  await userCollection.insertOne({ name, email, password: hashedPassword, userType: "admin" });
 
   // Create a session and redirect the user to the /members page
   req.session.authenticated = true;
   req.session.username = name;
-  req.session.isAdmin = true;
+  req.session.userType = "admin";
   req.session.cookie.maxAge = expireTime;
   res.redirect('/members');
 });
@@ -152,7 +152,7 @@ app.post('/login', async (req, res) => {
   // Set session variables and redirect to the members area
   req.session.authenticated = true;
   req.session.username = user.name;
-  req.session.isAdmin = user.isAdmin;
+  req.session.userType = user.userType;
   req.session.cookie.maxAge = expireTime;
   res.redirect('/members');
 });
@@ -186,8 +186,9 @@ res.redirect('/login');
 // admin page
 app.get('/admin', isAuthenticated, isAdmin, async (req, res) => {
   const users = await userCollection.find({}).toArray();
-  res.render('admin', { users, active: 'admin' });
+  res.render('admin', { users, username: req.session.username, active: 'admin' }); // Pass the username here
 });
+
 
 
 // route for unauthorized page
@@ -198,13 +199,14 @@ app.get('/not-authorized', (req, res) => {
 
 
 
-// Add this middleware after the isAuthenticated middleware
+// middleware function
 function isAdmin(req, res, next) {
-  if (req.session.isAdmin) {
+  if (req.session.userType === "admin") {
     return next();
   }
   res.redirect('/not-authorized'); // Redirect to the unauthorized page
 }
+
 
 app.get('/about', (req, res) => {
   res.render('about', { active: 'about' });
@@ -214,15 +216,16 @@ app.get('/about', (req, res) => {
 // isAuthenticated
 app.get('/promote/:userId', isAuthenticated, isAdmin, async (req, res) => {
   const userId = req.params.userId;
-  await userCollection.updateOne({ _id: new ObjectId(userId) }, { $set: { isAdmin: true } });
+  await userCollection.updateOne({ _id: new ObjectId(userId) }, { $set: { userType: "admin" } });
   res.redirect('/admin');
 });
 
 app.get('/demote/:userId', isAuthenticated, isAdmin, async (req, res) => {
   const userId = req.params.userId;
-  await userCollection.updateOne({ _id: new ObjectId(userId) }, { $set: { isAdmin: false } });
+  await userCollection.updateOne({ _id: new ObjectId(userId) }, { $set: { userType: "user" } });
   res.redirect('/admin');
 });
+
 
 
   
